@@ -29,10 +29,10 @@ public class TopClass implements ActionListener, KeyListener {
     private boolean dinoFired = false;
     private boolean released = true;
 
-    private int birdYTracker = SCREEN_HEIGHT / 2 - DINO_HEIGHT;
+    private int dinoYTracker = SCREEN_HEIGHT / 2 - DINO_HEIGHT;
     private Object buildComplete = new Object();
 
-    private JFrame f = new JFrame("Run Dino Run");
+    private JFrame frame = new JFrame("Run Dino Run");
     private JButton startGame;
     private JPanel topPanel;
 
@@ -55,15 +55,16 @@ public class TopClass implements ActionListener, KeyListener {
                 .getImage(this.getClass()
                         .getResource("resource/dino.png.png"));
 
-        f.setContentPane(createContentPane());
-        f.setResizable(true);
-        f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        f.setAlwaysOnTop(false);
-        f.setVisible(true);
-        f.setMinimumSize(new Dimension(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4));
-        f.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        f.setIconImage(icon);
-        f.addKeyListener(this);
+        frame.setTitle("Run Dino Run");
+        frame.setContentPane(createContentPane());
+        frame.setResizable(true);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setAlwaysOnTop(false);
+        frame.setVisible(true);
+        frame.setMinimumSize(new Dimension(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4));
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        frame.setIconImage(icon);
+        frame.addKeyListener(this);
     }
 
     private JPanel createContentPane() {
@@ -75,7 +76,7 @@ public class TopClass implements ActionListener, KeyListener {
         startGame = new JButton("Start Playing!");
         startGame.setBackground(Color.BLUE);
         startGame.setForeground(Color.WHITE);
-        startGame.setFocusable(false);
+        startGame.setFocusable(true); //todo see what happens when true/false
         startGame.setFont(new Font("Calibri", Font.BOLD, 42));
         startGame.setAlignmentX(0.5f);
         startGame.setAlignmentY(0.5f);
@@ -88,19 +89,19 @@ public class TopClass implements ActionListener, KeyListener {
         return topPanel;
     }
 
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == startGame) {
+    public void actionPerformed(ActionEvent actionEvent) {
+        if (actionEvent.getSource() == startGame) {
 
             loopVar = false;
-
             fadeOperation();
-        } else if (e.getSource() == buildComplete) {
-            Thread t = new Thread(() -> {
+
+        } else if (actionEvent.getSource() == buildComplete) {
+            Thread thread = new Thread(() -> {
                 loopVar = true;
                 gamePlay = true;
                 topClass.gameScreen(false);
             });
-            t.start();
+            thread.start();
         }
     }
 
@@ -112,7 +113,7 @@ public class TopClass implements ActionListener, KeyListener {
             dinoThrust = true;
             released = false;
         } else if (e.getKeyCode() == KeyEvent.VK_B && !gamePlay) {
-            birdYTracker = SCREEN_HEIGHT / 2 - DINO_HEIGHT;
+            dinoYTracker = SCREEN_HEIGHT / 2 - DINO_HEIGHT;
             dinoThrust = false;
             actionPerformed(new ActionEvent(startGame, -1, ""));
         }
@@ -195,13 +196,13 @@ public class TopClass implements ActionListener, KeyListener {
     private void gameScreen(boolean isSplash) {
         Rock bp1 = new Rock(ROCK_WIDTH, ROCK_HEIGHT);
         Rock bp2 = new Rock(ROCK_WIDTH, ROCK_HEIGHT);
-        Dino bird = new Dino(DINO_WIDTH, DINO_HEIGHT);
+        Dino dino = new Dino(DINO_WIDTH, DINO_HEIGHT);
 
 
-        int xLoc1 = SCREEN_WIDTH + SCREEN_DELAY, xLoc2
-                = (int) (3.0 / 2.0 * SCREEN_WIDTH + ROCK_WIDTH / 2.0) + SCREEN_DELAY;
-        int yLoc1 = bottomPipeLoc(), yLoc2 = bottomPipeLoc();
-        int birdX = DINO_X_LOCATION, birdY = birdYTracker;
+        int xLoc1 = SCREEN_WIDTH + SCREEN_DELAY,
+                xLoc2 = (int) (3.0 / 2.0 * SCREEN_WIDTH + ROCK_WIDTH / 2.0) + SCREEN_DELAY;
+        int yLoc1 = rockLoc(), yLoc2 = rockLoc();
+        int dinoXLocation = DINO_X_LOCATION, dinoYLocation = dinoYTracker;
 
 
         long startTime = System.currentTimeMillis();
@@ -210,37 +211,37 @@ public class TopClass implements ActionListener, KeyListener {
             if ((System.currentTimeMillis() - startTime) > UPDATE_DIFFERENCE) {
                 if (xLoc1 < (0 - ROCK_WIDTH)) {
                     xLoc1 = SCREEN_WIDTH;
-                    yLoc1 = bottomPipeLoc();
+                    yLoc1 = rockLoc();
                 } else if (xLoc2 < (0 - ROCK_WIDTH)) {
                     xLoc2 = SCREEN_WIDTH;
-                    yLoc2 = bottomPipeLoc();
+                    yLoc2 = rockLoc();
                 }
 
                 xLoc1 -= X_MOVEMENT_DIFFERENCE;
                 xLoc2 -= X_MOVEMENT_DIFFERENCE;
 
                 if (dinoFired && !isSplash) {
-                    birdYTracker = birdY;
+                    dinoYTracker = dinoYLocation;
                     dinoFired = false;
                 }
 
                 if (dinoThrust && !isSplash) {
 
-                    if (birdYTracker - birdY - DINO_JUMP_DIFF < DINO_JUMP_HEIGHT) {
-                        if (birdY - DINO_JUMP_DIFF > 0) {
-                            birdY -= DINO_JUMP_DIFF;
+                    if (dinoYTracker - dinoYLocation - DINO_JUMP_DIFF < DINO_JUMP_HEIGHT) {
+                        if (dinoYLocation - DINO_JUMP_DIFF > 0) {
+                            dinoYLocation -= DINO_JUMP_DIFF;
                         } else {
-                            birdY = 0;
-                            birdYTracker = birdY;
+                            dinoYLocation = 0;
+                            dinoYTracker = dinoYLocation;
                             dinoThrust = false;
                         }
                     } else {
-                        birdYTracker = birdY;
+                        dinoYTracker = dinoYLocation;
                         dinoThrust = false;
                     }
                 } else if (!isSplash) {
-                    birdY += DINO_FALL_DIFF;
-                    birdYTracker = birdY;
+                    dinoYLocation += DINO_FALL_DIFF;
+                    dinoYTracker = dinoYLocation;
                 }
 
                 bp1.setxLocation(xLoc1);
@@ -249,17 +250,17 @@ public class TopClass implements ActionListener, KeyListener {
                 bp2.setyLocation(yLoc2);
 
                 if (!isSplash) {
-                    bird.setxLocation(birdX);
-                    bird.setyLocation(birdY);
-                    playGameScreen.setDino(bird);
+                    dino.setxLocation(dinoXLocation);
+                    dino.setyLocation(dinoYLocation);
+                    playGameScreen.setDino(dino);
                 }
 
 
                 playGameScreen.setRock(bp1, bp2);
 
-                if (!isSplash && bird.getDinosaurWidth() != -1) {
-                    collisionDetection(bp1, bp2, bird);
-                    updateScore(bp1, bp2, bird);
+                if (!isSplash && dino.getDinosaurWidth() != -1) {
+                    collisionDetection(bp1, bp2, dino);
+                    updateScore(bp1, bp2, dino);
                 }
 
 
@@ -271,7 +272,7 @@ public class TopClass implements ActionListener, KeyListener {
         }
     }
 
-    private int bottomPipeLoc() {
+    private int rockLoc() {
         int temp = 0;
         while (temp <= ROCK_GAP + 50 || temp >= SCREEN_HEIGHT - ROCK_GAP) {
             temp = (int) (Math.random() * ((double) SCREEN_HEIGHT));

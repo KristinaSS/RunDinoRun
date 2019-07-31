@@ -8,27 +8,29 @@ public class Rock {
 
     public Rock(int initalWidth, int initialHeight) {
         rock = Toolkit.getDefaultToolkit().getImage(this.getClass().getResource("resource/rock.png.png"));
-        scaleBird(initalWidth,initialHeight);
+        scaleBird(initalWidth, initialHeight);
     }
 
-    public void scaleBird(int width, int height){
-        rock = rock.getScaledInstance(width,height,Image.SCALE_SMOOTH);
+    public void scaleBird(int width, int height) {
+        rock = rock.getScaledInstance(width, height, Image.SCALE_SMOOTH);
     }
 
     public Image getRock() {
         return rock;
     }
-    public int getRockWidth(){
-        try{
+
+    public int getRockWidth() {
+        try {
             return rock.getWidth(null);
-        }catch (Exception e){ //todo see a more concrete expression
+        } catch (Exception e) { //todo see a more concrete expression
             return -1;
         }
     }
-    public int getRockHeight(){
-        try{
+
+    public int getRockHeight() {
+        try {
             return rock.getHeight(null);
-        }catch (Exception e){ //todo see a more concrete expression
+        } catch (Exception e) { //todo see a more concrete expression
             return -1;
         }
     }
@@ -48,14 +50,16 @@ public class Rock {
     public void setyLocation(int yLocation) {
         this.yLocation = yLocation;
     }
-    public Rectangle getRectangle(){
-        return (new Rectangle(xLocation,yLocation,rock.getWidth(null),rock.getHeight(null)));
+
+    public Rectangle getRectangle() {
+        return (new Rectangle(xLocation, yLocation, rock.getWidth(null), rock.getHeight(null)));
     }
-    public BufferedImage getBufferedImage(){
-        BufferedImage bufferedImage = new BufferedImage(rock.getWidth(null),rock.getHeight(null),
+
+    public BufferedImage getBufferedImage() {
+        BufferedImage bufferedImage = new BufferedImage(rock.getWidth(null), rock.getHeight(null),
                 BufferedImage.TYPE_INT_ARGB);
         Graphics graphics = bufferedImage.getGraphics();
-        graphics.drawImage(rock,0,0,null);
+        graphics.drawImage(rock, 0, 0, null);
         graphics.dispose();
         return bufferedImage;
     }

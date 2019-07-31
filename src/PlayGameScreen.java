@@ -22,44 +22,42 @@ public class PlayGameScreen extends JPanel {
         this.isSplash = isSplash;
     }
 
-    public void paintComponent(Graphics g){
-        super.paintComponent(g);
+    public void paintComponent(Graphics graphics){
+        super.paintComponent(graphics);
 
-        g.setColor(new Color(89, 81, 247)); //color for the blue sky
-        g.fillRect(0, 0, screenWidth, screenHeight*7/8); //create the sky rectangle
-        g.setColor(new Color(147, 136, 9)); //brown color for ground
-        g.fillRect(0, screenHeight*7/8, screenWidth, screenHeight/8); //create the ground rectangle
-        g.setColor(Color.BLACK); //dividing line color
-        g.drawLine(0, screenHeight*7/8, screenWidth, screenHeight*7/8); //draw the dividing line
+        graphics.setColor(new Color(89, 81, 247));
+        graphics.fillRect(0, 0, screenWidth, screenHeight*7/8);
+        graphics.setColor(new Color(81, 147, 33));
+        graphics.fillRect(0, screenHeight*7/8, screenWidth, screenHeight/8);
+        graphics.setColor(Color.BLACK);
+        graphics.drawLine(0, screenHeight*7/8, screenWidth, screenHeight*7/8);
 
-        //objects must be instantiated before they're drawn!
         if(rock1 != null && rock2 != null) {
-            g.drawImage(rock1.getRock(), rock1.getxLocation(), rock1.getyLocation(), null);
-            g.drawImage(rock2.getRock(), rock2.getxLocation(), rock2.getyLocation(), null);
+            graphics.drawImage(rock1.getRock(), rock1.getxLocation(), rock1.getyLocation(), null);
+            graphics.drawImage(rock2.getRock(), rock2.getxLocation(), rock2.getyLocation(), null);
         }
 
         if(!isSplash && dino != null) {
-            g.drawImage(dino.getDinosaur(), dino.getxLocation(), dino.getyLocation(), null);
+            graphics.drawImage(dino.getDinosaur(), dino.getxLocation(), dino.getyLocation(), null);
         }
 
-        //needed in case the primary font does not exist
         try {
-            g.setFont(primaryFont);
-            FontMetrics metric = g.getFontMetrics(primaryFont);
+            graphics.setFont(primaryFont);
+            FontMetrics metric = graphics.getFontMetrics(primaryFont);
             messageWidth = metric.stringWidth(message);
             scoreWidth = metric.stringWidth(String.format("%d", successfulJumps));
         }
         catch(Exception e) {
-            g.setFont(failFont);
-            FontMetrics metric = g.getFontMetrics(failFont);
+            graphics.setFont(failFont);
+            FontMetrics metric = graphics.getFontMetrics(failFont);
             messageWidth = metric.stringWidth(message);
             scoreWidth = metric.stringWidth(String.format("%d", successfulJumps));
         }
 
-        g.drawString(message, screenWidth/2-messageWidth/2, screenHeight/4);
+        graphics.drawString(message, screenWidth/2-messageWidth/2, screenHeight/4);
 
         if(!isSplash) {
-            g.drawString(String.format("%d", successfulJumps), screenWidth/2-scoreWidth/2, 50);
+            graphics.drawString(String.format("%d", successfulJumps), screenWidth/2-scoreWidth/2, 50);
         }
     }
 
